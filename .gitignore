@@ -1,9 +1,11 @@
 venv/
 __pycache__/
 airflow.db
+*.db*
 airflow.cfg
 webserver_config.py
 logs/
-data/*.csv
+data/**/*.csv
 *.pkl
 *.generated
+mlruns
