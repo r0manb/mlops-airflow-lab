@@ -41,13 +41,13 @@ def train_model(input_csv: Path | str) -> Path:
         clf.fit(X_train, y_train)
 
         y_pred = clf.predict(X_test)
-        y_pred_proba = clf.predict_proba(X_test)
+        y_pred_proba = clf.predict_proba(X_test)[:, 1]
 
         f1, roc_auc, accuracy, precision, recall = _evaluate_model(
             y_pred, y_pred_proba, y_test
         )
 
-        mlflow.sklearn.log_model(scaler, artifact_path="scaler")
+        mlflow.sklearn.log_model(scaler, name="scaler")
 
         mlflow.log_metric("f1_score", f1)
         mlflow.log_metric("roc_auc_score", roc_auc)
@@ -68,7 +68,7 @@ def _prepare_dataset(
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    return X_train_scaled, X_test_scaled, y_train, y_test, scaler
+    return X_train_scaled, X_test_scaled, y_train.to_numpy(), y_test.to_numpy(), scaler
 
 
 def _evaluate_model(
